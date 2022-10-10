@@ -1,34 +1,38 @@
 const express = require('express');
 const http = require('http');
 
+app.use(express.static('assets'))
+
+app.get('/', (req, res) => {
+   res.sendFile(__dirname + '/index.html');
+});
+
+app.get('/dashboard', (req, res) => {
+   res.sendFile(__dirname + '/dashboard.html');
+});
+
+app.get('/signup', (req, res) => {
+   res.sendFile(__dirname + '/sign-up.html');
+});
+
+app.get('/profile', (req, res) => {
+   res.sendFile(__dirname + '/profile.html');
+});
+
+/* INICIO CODIGO ACOPLE */
+
 const app = express();
 const server = http.createServer(app);
 var io = require('socket.io')(server);
 server.listen(process.env.PORT || 3000);
 console.log('Server is running');
 
+const SerialPort = require('serialport').SerialPort;
+const mySerial = new SerialPort({ path: 'COM13', baudRate: 9600 })
+
 io.on('connection', function (socket) {
    console.log('a new socket connection');
 })
-
-app.use(express.static('public'))
-
-// routes
-app.get('/', (req, res) => {
-   res.sendFile(__dirname + '/index.html');
-});
-
-// static files
-// app.use(express.static(path.join(__dirname, 'public')));
-
-const SerialPort = require('serialport').SerialPort;
-// const Readline = require('@serialport/parser-readline')
-
-const mySerial = new SerialPort({ path: 'COM13', baudRate: 9600 })
-
-/* const parser = port.pipe(new Readline({ delimiter: '\r\n' }))
-
-mySerial.pipe(parser); */
 
 mySerial.on('open', function () {
    console.log('Opened Port.');
@@ -45,3 +49,5 @@ mySerial.on('data', function (data) {
 mySerial.on('err', function (data) {
    console.log(err.message);
 });
+
+/* FIN CODIGO ACOPLE */
